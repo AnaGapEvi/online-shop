@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->longText('reg_token')->nullable();
             $table->string('role')->default('user');
             $table->timestamp('email_verified_at')->nullable();
-            $table->stwring('gender');
+            $table->string('gender');
             $table->rememberToken();
             $table->timestamps();
         });
