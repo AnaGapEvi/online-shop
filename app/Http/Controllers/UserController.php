@@ -47,7 +47,7 @@ class UserController extends Controller
             $token = $user->createToken('Laravel')->accessToken;
             $user->reg_token = $token;
             $user->save();
-            $this->emailVerification($user, $token);
+//            $this->emailVerification($user, $token);
             return response()->json(['token' => $token], 200);
         } else{
             return response()->json($validator->errore());
