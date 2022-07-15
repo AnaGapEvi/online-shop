@@ -60,7 +60,7 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
     public function reviews(){
-        return $this->hasMany(Reviews::class);
+        return $this->belongsToMany( \App\Models\User::class, 'reviews', 'product_id','user_id')->withPivot(['first_name']);
     }
 
 }

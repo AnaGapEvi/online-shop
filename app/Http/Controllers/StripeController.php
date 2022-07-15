@@ -18,10 +18,11 @@ class StripeController extends Controller
     }
 
     public function charge(Request $request){
+
         $order = new Order();
         $order->amount=$request->amount;
         $order->user_id = Auth::user()->id;
-$order->save();
+        $order->save();
         try {
             $token = Token::create(array(
                 "card" => array(
@@ -65,5 +66,8 @@ $order->save();
             // Something else happened, completely unrelated to Stripe
             return response()->json($e->getJsonBody());
         }
+
+        return response()->json('payment success');
+
     }
 }

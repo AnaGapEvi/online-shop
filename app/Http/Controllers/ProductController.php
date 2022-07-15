@@ -63,7 +63,6 @@ class ProductController extends Controller
     }
     public function like(Request $request, $id)
     {
-
 //        $product = Product::find($request->id);
 //        $reviews = $product->likes()->where('user_id', Auth::user()->id )->count();
 //

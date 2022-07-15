@@ -63,8 +63,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/add-card', [BagController::class, 'addToBag']);
     Route::delete('/delete-bag/{id}', [BagController::class, 'destroy']);
     Route::delete('/delete-review/{id}', [ReviewsController::class, 'destroy']);
-    Route::delete('/update-review/{id}', [ReviewsController::class, 'update']);
+    Route::put('/update-review/{id}', [ReviewsController::class, 'update']);
     Route::post('/charge', [StripeController::class, 'charge']);
     Route::post('/stripe', [StripeController::class, 'stripePost'])->name('stripe.post');
     Route::post('/shipping-address', [ShoppingAddressController::class, 'store'])->name('shipping');
+    Route::put('/increment-quantity/{id}', [BagController::class, 'incrementQuantity'])->name('increment-quantity');
+    Route::get('/decrement-quantity/{id}', [BagController::class, 'decrementQuantity'])->name('decrement-quantity');
+
 });
