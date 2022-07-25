@@ -34,6 +34,7 @@ Route::put('/forgot', [UserController::class, 'forgotPassword']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/product/{id}', [ProductController::class, 'show']);
 Route::get('/like-product/{id}', [ProductController::class, 'like']);
+Route::get('/like-product-diz/{id}', [ProductController::class, 'disLike']);
 Route::get('/reviews/{id}', [ReviewsController::class, 'userReviews']);
 Route::get('/order-items/{id}', [OrderController::class, 'OrderItem']);
 

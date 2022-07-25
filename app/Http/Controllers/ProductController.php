@@ -73,6 +73,18 @@ class ProductController extends Controller
             return response()->json($data);
 //        }
     }
+    public function disLike(Request $request, $id)
+    {
+//        $product = Product::find($request->id);
+//        $reviews = $product->likes()->where('user_id', Auth::user()->id )->count();
+//
+//        if(!$reviews){
+        $data = Product::find($id);
+        $data->likes = $data->likes-=1;
+        $data->save();
+        return response()->json($data);
+//        }
+    }
 //    public function searchProduct(Request $request)
 //    {
 //        $data = Product::where('name', 'LIKE', $request->keyword.'%')->get();
