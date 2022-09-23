@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Stripe;
@@ -13,12 +14,13 @@ use Stripe\Token;
 
 class StripeController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
     }
 
-    public function charge(Request $request){
-
+    public function charge(Request $request): JsonResponse
+    {
         $order = new Order();
         $order->amount=$request->amount;
         $order->user_id = Auth::user()->id;
@@ -68,6 +70,5 @@ class StripeController extends Controller
         }
 
         return response()->json('payment success');
-
     }
 }

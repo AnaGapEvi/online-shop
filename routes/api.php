@@ -9,8 +9,6 @@ use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\ShoppingAddressController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\WishListController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,7 +49,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/user-orders', [OrderController::class, 'userOrders']);
     Route::put('/update-profile', [UserController::class, 'updateProfile']);
     Route::post('/new-review', [ReviewsController::class, 'newReviews']);
-    Route::get('/wishList', [WishListController::class, 'show']);
     Route::get('/users', [AdminController::class, 'index']);
     Route::post('/reports', [AdminController::class, 'reports']);
     Route::post('/new-product', [ProductController::class, 'store']);
@@ -70,5 +67,4 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/shipping-address', [ShoppingAddressController::class, 'store'])->name('shipping');
     Route::put('/increment-quantity/{id}', [BagController::class, 'incrementQuantity'])->name('increment-quantity');
     Route::get('/decrement-quantity/{id}', [BagController::class, 'decrementQuantity'])->name('decrement-quantity');
-
 });

@@ -4,23 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
-    public function index(){
+    public function index(): JsonResponse
+    {
         $categories = Category::get();
+
         return response()->json($categories);
     }
 
-
-//    public function show(Category $category){
-//        $category->load('products');
-//        return $category;
-//    }
-
-    public function categoryProduct($id){
+    public function categoryProduct(int $id): JsonResponse
+    {
         $products = Product::where('category_id', '=', $id)->get();
+
         return response()->json($products);
     }
 }

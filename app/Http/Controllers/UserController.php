@@ -3,30 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserCard;
 use Carbon\Carbon;
-use Illuminate\Auth\Events\Validated;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-//use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-//use Illuminate\Foundation\Auth\ResetsPasswords;
 
 
 class UserController extends Controller
 {
-
-    public function emailVerification(User $user, $token)
-    {
-        Mail::send('mail.verify', ['user' => $user, 'token' => $token], function ($m) use ($user){
-            $m->to($user->email, $user->name)->subject('Please verify your account');
-        });
-    }
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         $validator = $request->validate([
-
                 'first_name'=>'required',
                 'last_name'=>'required',
                 'email'=>'required|email',
@@ -35,30 +23,27 @@ class UserController extends Controller
                 'password' => 'required|min:8',
         ]);
 
-        if($validator){
-            $user = User::create([
-                'first_name'=>$request->first_name,
-                'last_name'=>$request->last_name,
-                'email'=>$request->email,
-                'birthday'=>$request->birthday,
-                'gender'=>$request->gender,
-                'password' => Hash::make($request->password)
-            ]);
-            $token = $user->createToken('Laravel')->accessToken;
-            $user->reg_token = $token;
-            $user->save();
-//            $this->emailVerification($user, $token);
-            return response()->json(['token' => $token], 200);
-        } else{
-            return response()->json($validator->errore());
-        }
+        if(!$validator) return response()->json($validator->errore());
+
+        $user = User::create([
+            'first_name'=>$request->first_name,
+            'last_name'=>$request->last_name,
+            'email'=>$request->email,
+            'birthday'=>$request->birthday,
+            'gender'=>$request->gender,
+            'password' => Hash::make($request->password)
+        ]);
+        $token = $user->createToken('Laravel')->accessToken;
+        $user->reg_token = $token;
+        $user->save();
+        return response()->json(['token' => $token], 200);
     }
 
-    public function verify(Request $request)
+    public function verify(Request $request): JsonResponse
     {
         $user = User::where('email', '=', $request->email)->first();
 
-        if($user->reg_token === $request->token){
+        if ($user->reg_token === $request->token) {
             $user->reg_token = null;
             $user->email_verified_at = Carbon::now();
             $user->save();
@@ -68,35 +53,32 @@ class UserController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $validator = $request->validate([
             'email'=>'required|email',
             'password' => 'required',
         ]);
-        if($validator){
-            $user = User::query()->where('email', $request->email,)->first();
+        if(!$validator) return response()->json($validator->erroe());
 
-            if($user) {
-                if (Hash::check($request->password, $user->password)) {
-                    $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-                    $response = ['token' => $token];
-                    return response($response);
-                } else {
-                    $response = ["message" => "Password mismatch"];
-                    return response($response, 422);
-                }
-            } else {
-                $response = ["message" =>'User does not exist'];
-                return response($response, 422);
-            }
-        } else{
-            return response()->json($validator->erroe());
+        $user = User::query()->where('email', $request->email,)->first();
+
+        if(!$user) return response()->json(["message" =>'User does not exist'], 422);
+
+        if (Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('Laravel Password Grant Client')->accessToken;
+            $response = ['token' => $token];
+
+            return response()->Json($response);
+        } else {
+            $response = ["message" => "Password mismatch"];
+
+            return response()->json($response, 422);
         }
-
     }
-    public function updateProfile(Request $request){
 
+    public function updateProfile(Request $request): JsonResponse
+    {
         $user = Auth::user();
         $user->first_name = $request->input('first_name');
         $user->last_name = $request->input('last_name');
@@ -108,29 +90,32 @@ class UserController extends Controller
             $user->email = $request->input('email');
         }
         $user->save();
+
         return response()->json($user);
     }
 
-    public function me()
+    public function me(): JsonResponse
     {
         return response()->json(['user' => auth()->user()]);
     }
 
-    public function forgotPassword(Request $request){
+    public function forgotPassword(Request $request): JsonResponse
+    {
         $user = User::query()->where('email', $request->email,)->first();
         $user->password ='';
-        if($request->password){
+
+        if ($request->password) {
             $user->password = Hash::make($request->password);
         }
         $user->save();
+
         return response()->json($user);
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $request->user()->token()->revoke();
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
 }

@@ -17,4 +17,5 @@ class Shopping_address extends Model
         'user_id',
         'telephone'
     ];
+
 }
